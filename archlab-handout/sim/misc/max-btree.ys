@@ -1,0 +1,73 @@
+.pos 0
+     irmovq Stack, %rsp
+     irmovq root, %rdi
+     call max_btree
+     halt
+max_btree:
+     xorq %rax, %rax # max = 0
+     rrmovq %rdi, %rdx
+     mrmovq 8(%rdx), %rcx
+
+     andq %rcx,%rcx		# Set condition codes
+     je     return
+     mrmovq (%rdi), %rax
+     mrmovq 8(%rdi), %rdi
+     call max_btree
+     mrmovq (%rdi), %r8
+     rrmovq %r8, %r9
+     subq %rax, %r9
+     jle cont
+     rrmovq %r8, %rax
+cont:
+     mrmovq 8(%rdi), %rdi
+     call max_btree
+     mrmovq (%rdi), %r8
+     rrmovq %r8, %r9
+     subq %rax, %r9
+     jle return
+     rrmovq %r8, %rax 
+return:
+     ret
+
+# A binary (not search!) tree, 
+# absolutely positioned again. 
+.pos 0x200
+root:
+.quad 5 
+.quad node7 
+.quad node12
+node7: 
+.quad 7
+.quad node25
+.quad node905 
+node25:
+.quad 25 
+.quad 0 
+.quad 0
+node905: 
+.quad 905
+.quad nodem1
+.quad 0 
+nodem1:
+.quad -1 
+.quad 0 
+.quad 0
+node12: 
+.quad 12
+.quad node219
+.quad nodem10 
+node219:
+.quad 219 
+.quad 0 
+.quad 0
+nodem10: 
+.quad -10
+.quad 0
+.quad node331 
+node331:
+.quad 331 
+.quad 0 
+.quad 0
+
+.pos 0x800
+Stack:

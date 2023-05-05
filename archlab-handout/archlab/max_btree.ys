@@ -1,0 +1,79 @@
+# Ece Satılmış 2375681
+.pos 0
+     irmovq Stack, %rsp
+     irmovq root, %rdi
+     call max_btree
+     halt
+max_btree:
+     irmovq $-9223372036854775808, %rax # max = 1L << 63
+     andq %rdi,%rdi            
+     je     return # return if list == NULL
+     pushq %r12 
+     pushq %rbp
+     pushq %rbx
+     rrmovq    %rdi, %rbx # copy
+     rrmovq    %rdi, %r12 # copy
+     mrmovq    8(%rdi), %rdi # root = root->left
+     call max_btree
+     rrmovq    %rax, %rbp # copy
+     mrmovq (%r12), %r8 # max = root->value
+     rrmovq %r8, %r9 # copy
+     subq %rax, %r9 # compare value with max
+     jle cont1 # skip if candidate <= max
+     rrmovq    %r8, %rbp # max = candidate
+cont1:
+     mrmovq    16(%rbx), %rdi # root = root->right
+     call    max_btree
+     rrmovq %rbp, %r8 # copy
+     rrmovq %r8, %r9 # copy
+     subq %rax, %r9 # compare value with max
+     jle    cont2 # skip if candidate <= max
+     rrmovq    %r8, %rax # max = candidate
+cont2:
+     popq %rbx
+     popq %rbp
+     popq %r12
+return:
+     ret # return if list == NULL
+
+# A binary (not search!) tree,
+# absolutely positioned again.
+.pos 0x200
+root:
+.quad 5
+.quad node7
+.quad node12
+node7:
+.quad 7
+.quad node25
+.quad node905
+node25:
+.quad 25
+.quad 0
+.quad 0
+node905:
+.quad 905
+.quad nodem1
+.quad 0
+nodem1:
+.quad -1
+.quad 0
+.quad 0
+node12:
+.quad 12
+.quad node219
+.quad nodem10
+node219:
+.quad 219
+.quad 0
+.quad 0
+nodem10:
+.quad -10
+.quad 0
+.quad node331
+node331:
+.quad 331
+.quad 0
+.quad 0
+.pos 0x800
+Stack:
